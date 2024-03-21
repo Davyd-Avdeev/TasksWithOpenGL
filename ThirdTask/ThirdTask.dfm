@@ -12,6 +12,8 @@ object Form3: TForm3
   Font.Style = []
   OnClose = FormClose
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  OnKeyUp = FormKeyUp
   OnResize = FormResize
   TextHeight = 15
 end
