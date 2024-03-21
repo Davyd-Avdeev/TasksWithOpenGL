@@ -14,7 +14,6 @@ type
     procedure FormResize(Sender: TObject);
     procedure Draw;
     procedure DrawObjects();
-    procedure DrawSphere();
     procedure DrawAxes();
     procedure IdleHandler(Sender: TObject; var Done: Boolean);
 
@@ -32,6 +31,7 @@ type
 
 var
   Form1: TForm1;
+  isSpinning: Boolean;
 
 implementation
 
@@ -91,8 +91,12 @@ end;
 
 procedure TForm1.IdleHandler(Sender: TObject; var Done: Boolean);
 begin
-//
-  glRotatef(spin, 0.0, 1.0, 0.0);
+  if(isSpinning) then
+  begin
+    spin:= spin + 5;
+    if(spin >= 360) then
+      spin:= 0;
+  end;
   Draw();
   Sleep(5);
   Done:=False;
@@ -100,11 +104,7 @@ end;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  if (spin = 5) then
-    spin:=0
-  else
-    spin:=5;
-
+  isSpinning:= not isSpinning;
 end;
 
 procedure TForm1.Draw;
@@ -119,6 +119,8 @@ var
   i,j:Integer;
 begin
  //
+  glLoadIdentity();
+  glRotatef(spin, 0.0, 1.0, 0.0);
   glBegin(GL_QUADS);
     glColor3f(1,0,0);
     glVertex3f(-1,-1,-1);
@@ -148,18 +150,6 @@ begin
     glVertex3f(1,-1,1);
   glEnd();
 
-end;
-
-procedure TForm1.DrawSphere();
-var
-  quadObj: GLUquadricObj;
-begin
-  quadObj:=gluNewQuadric;
-  gluQuadricDrawStyle(quadObj, GLU_FILL);
-  glColor3f(1,0,0);
-  gluSphere(quadObj, 2,10,10);
-  glRotatef(3, 0,1,0);
-  gluDeleteQuadric(quadObj);
 end;
 
 procedure TForm1.DrawAxes();

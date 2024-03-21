@@ -15,6 +15,9 @@
         <Projects Include="FourthTask\TasskWithText.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="FifthTask\GameTwentyFortyEight.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -59,14 +62,23 @@
     <Target Name="TasskWithText:Make">
         <MSBuild Projects="FourthTask\TasskWithText.dproj" Targets="Make"/>
     </Target>
+    <Target Name="GameTwentyFortyEight">
+        <MSBuild Projects="FifthTask\GameTwentyFortyEight.dproj"/>
+    </Target>
+    <Target Name="GameTwentyFortyEight:Clean">
+        <MSBuild Projects="FifthTask\GameTwentyFortyEight.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="GameTwentyFortyEight:Make">
+        <MSBuild Projects="FifthTask\GameTwentyFortyEight.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="FirstLookAtOpenGL;PingPong;World3D;TasskWithText"/>
+        <CallTarget Targets="FirstLookAtOpenGL;PingPong;World3D;TasskWithText;GameTwentyFortyEight"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="FirstLookAtOpenGL:Clean;PingPong:Clean;World3D:Clean;TasskWithText:Clean"/>
+        <CallTarget Targets="FirstLookAtOpenGL:Clean;PingPong:Clean;World3D:Clean;TasskWithText:Clean;GameTwentyFortyEight:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="FirstLookAtOpenGL:Make;PingPong:Make;World3D:Make;TasskWithText:Make"/>
+        <CallTarget Targets="FirstLookAtOpenGL:Make;PingPong:Make;World3D:Make;TasskWithText:Make;GameTwentyFortyEight:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
