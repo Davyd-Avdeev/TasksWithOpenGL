@@ -13,7 +13,7 @@ type
   procedure FormResize(Sender: TObject);
   procedure IdleHandler(Sender: TObject; var Done: Boolean);
   procedure Draw();
-  procedure DrawText(tx : array of char);
+  procedure DrawText(tx: string; x,y,z : GLFloat; txSize: GLFloat);
   procedure DrawObjects();
 
   procedure BuildFont;
@@ -94,22 +94,24 @@ end;
 procedure TForm4.Draw();
 begin
   glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT);
-  DrawText(txArray);
+  DrawText('Hello world!',-2,-2, 0, 20);
+  DrawText('Center',0, 0, 0, 8);
   DrawObjects();
 
   SwapBuffers(ghDC);
 end;
 
-procedure TForm4.DrawText(tx : array of char);
+procedure TForm4.DrawText(tx: string; x,y,z : GLFloat; txSize: GLFloat);
 var
   i : Integer;
 begin
   glLoadIdentity;
   glColor3f(1,1,1);
-  glTranslatef(0,0,0);
-  for i := 0 to Length(txArray)-1 do
+  glTranslatef(x,y,z);
+  glScalef(0.05*txSize,0.05*txSize,1);
+  for i := 1 to Length(tx) do
   begin
-    PrintText(txArray[i]);
+    PrintText(tx[i]);
   end;
 
 end;
@@ -119,7 +121,7 @@ var
   i,j:Integer;
 begin
   glLoadIdentity;
-  glPointSize(12);
+  glPointSize(8);
   glBegin(GL_POINTS);
     glColor3f(0,1,0);
     glVertex3f(0,0,0);
@@ -127,7 +129,7 @@ begin
 
 end;
 
-procedure TForm4.BuildFont;
+procedure TForm4.BuildFont();
 var
   hFontNew, hOldFont : HFONT;
   Quality : GLfloat;
