@@ -8,8 +8,8 @@ uses
 
 type
   TObj = class
-    X, Y, XSpeed, YSpeed,Angle :GLFloat;
-    constructor Create(_x, _y, _angle: GLFloat);
+    X, Y, XSpeed, YSpeed, XVector, YVector :GLFloat;
+    constructor Create(_x, _y: GLFloat);
   end;
   TForm2 = class(TForm)
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -43,6 +43,8 @@ var
   fLogFont: TLogFont;
   scorePlayer1: Cardinal;
   scorePlayer2: Cardinal;
+  isWasGool: Boolean;
+  timeFloatStart, timeFloatCurrent: Real;
 const
   CGL_FONT_HEIGHT = -28;
   CGL_START_LIST = 1000;
@@ -51,13 +53,14 @@ implementation
 
 {$R *.dfm}
 
-constructor TObj.Create(_x, _y, _angle: GLFloat);
+constructor TObj.Create(_x, _y: GLFloat);
 begin
   X:= _x;
   Y:= _Y;
   XSpeed:= 8;
-  YSpeed:= 8;
-  Angle:= _angle;
+  YSpeed:= 10;
+  XVector:= 1;
+  YVector:= 1;
 end;
 
 procedure TForm2.FormCreate(Sender: TObject);
@@ -83,11 +86,11 @@ begin
   glEnable(GL_DEPTH_TEST);
 
   SetLength(objectsArray, 3);
-  objectsArray[0]:= TObj.Create(-4.4, 0, 0);
-  objectsArray[1]:= TObj.Create(4.3, 0, 0);
-  objectsArray[2]:= TObj.Create(0, 0, 0);
+  objectsArray[0]:= TObj.Create(-4.7, 0);
+  objectsArray[1]:= TObj.Create(4.5, 0);
+  objectsArray[2]:= TObj.Create(0, 0);
   objectsArray[2].XSpeed:= 11;
-  objectsArray[2].YSpeed:= 3;
+  objectsArray[2].YSpeed:= 0;
   SetLength(keysPressed, 4);
   keysPressed[0]:= False;
   keysPressed[1]:= False;
@@ -121,32 +124,86 @@ end;
 
 procedure TForm2.MovingObjects();
 begin
-if keysPressed[0] then
-  if (objectsArray[1].Y <= 3.4) then
-    objectsArray[1].Y:= objectsArray[1].Y + 0.01 * objectsArray[1].YSpeed;
+  if keysPressed[0] or keysPressed[1] then
+    if keysPressed[0] then
+    begin
+      if (objectsArray[1].Y <= 3.53) then
+        objectsArray[1].YVector:= 1
+      else
+        objectsArray[1].YVector:= 0;
+    end
+    else
+    begin
+      if (objectsArray[1].Y >= -4) then
+        objectsArray[1].YVector:= -1
+      else
+        objectsArray[1].YVector:= 0;
+    end
+  else
+    objectsArray[1].YVector:= 0;
 
-if keysPressed[1] then
-  if (objectsArray[1].Y >= -3.85) then
-    objectsArray[1].Y:= objectsArray[1].Y - 0.01 * objectsArray[1].YSpeed;
+  if keysPressed[2] or keysPressed[3] then
+    if keysPressed[2] then
+    begin
+      if (objectsArray[0].Y <= 3.53) then
+        objectsArray[0].YVector:= 1
+      else
+        objectsArray[0].YVector:= 0;
+    end
+    else
+    begin
+      if (objectsArray[0].Y >= -4) then
+        objectsArray[0].YVector:= -1
+      else
+        objectsArray[0].YVector:= 0;
+    end
+  else
+    objectsArray[0].YVector:= 0;
 
-if keysPressed[2] then
-  if (objectsArray[0].Y <= 3.4) then
-    objectsArray[0].Y:= objectsArray[0].Y + 0.01 * objectsArray[0].YSpeed;
+  objectsArray[0].Y:= objectsArray[0].Y + 0.01 * objectsArray[0].YSpeed * objectsArray[0].YVector;
+  objectsArray[1].Y:= objectsArray[1].Y + 0.01 * objectsArray[1].YSpeed * objectsArray[1].YVector;
 
-if keysPressed[3] then
-  if (objectsArray[0].Y >= -3.85) then
-    objectsArray[0].Y:= objectsArray[0].Y - 0.01 * objectsArray[0].YSpeed;
-
+  if(isWasGool) then
+    if (timeFloatCurrent <= 500) then
+    begin
+      timeFloatCurrent:= timeFloatCurrent + 5;
+      Exit();
+    end
+    else
+    begin
+     timeFloatCurrent:= 0;
+     isWasGool:= False;
+    end;
+  objectsArray[2].X:= objectsArray[2].X - 0.01 * objectsArray[2].XSpeed;
+  objectsArray[2].Y:= objectsArray[2].Y - 0.01 * objectsArray[2].YSpeed * objectsArray[2].YVector;
 end;
 
 procedure TForm2.ObjectsBehavior();
 begin
   if(objectsArray[2].X >= objectsArray[0].X-0.2) And (objectsArray[2].X <= objectsArray[0].X) then
     if (objectsArray[2].Y <= objectsArray[0].Y + 0.75) And (objectsArray[2].Y >= objectsArray[0].Y - 0.75) then
+    begin
       objectsArray[2].XSpeed:= objectsArray[2].XSpeed * -1;
+      if(objectsArray[0].YVector = 0) then
+      else
+      begin
+        objectsArray[2].YSpeed:= objectsArray[0].YSpeed/2 + objectsArray[2].YSpeed * 0.05;
+        objectsArray[2].XSpeed:= objectsArray[2].XSpeed + objectsArray[2].XSpeed*0.05;
+        objectsArray[2].YVector:= -objectsArray[0].YVector;
+      end;
+    end;
   if(objectsArray[2].X >= objectsArray[1].X) And (objectsArray[2].X <= objectsArray[1].X+0.2) then
     if (objectsArray[2].Y <= objectsArray[1].Y + 0.75) And (objectsArray[2].Y >= objectsArray[1].Y - 0.75) then
-      objectsArray[2].XSpeed:= objectsArray[2].XSpeed * -1;
+      begin
+        objectsArray[2].XSpeed:= objectsArray[2].XSpeed * -1;
+        if(objectsArray[1].YVector = 0) then
+        else
+        begin
+          objectsArray[2].YSpeed:= objectsArray[1].YSpeed/2 + objectsArray[2].YSpeed * 0.05;
+          objectsArray[2].XSpeed:= objectsArray[2].XSpeed + objectsArray[2].XSpeed*0.2;
+          objectsArray[2].YVector:= -objectsArray[1].YVector;
+        end;
+      end;
 
   if(objectsArray[2].Y >= 4.35) And (objectsArray[2].Y <= 4.55) then
     objectsArray[2].YSpeed := objectsArray[2].YSpeed * -1;
@@ -164,15 +221,16 @@ begin
     Inc(scorePlayer2);
   end;
 
-  objectsArray[2].X:= objectsArray[2].X - 0.01 * objectsArray[2].XSpeed;
-  objectsArray[2].Y:= objectsArray[2].Y - 0.01 * objectsArray[2].YSpeed;
 end;
 
 procedure TForm2.WasGoal();
 begin
+  objectsArray[2].XSpeed := 11;
+  objectsArray[2].YSpeed := 0;
   objectsArray[2].X:= 0;
   objectsArray[2].Y:= 0;
-  Sleep(500);
+  isWasGool:= True;
+  timeFloatCurrent:= 0;
 end;
 
 procedure TForm2.Draw();
