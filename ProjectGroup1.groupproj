@@ -1,0 +1,72 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{5DE774D7-7D4E-4F5E-B884-72497A117107}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="FirstTask\FirstLookAtOpenGL.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="SecondTask\PingPong.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="ThirdTask\World3D.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="FourthTask\TasskWithText.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="FirstLookAtOpenGL">
+        <MSBuild Projects="FirstTask\FirstLookAtOpenGL.dproj"/>
+    </Target>
+    <Target Name="FirstLookAtOpenGL:Clean">
+        <MSBuild Projects="FirstTask\FirstLookAtOpenGL.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FirstLookAtOpenGL:Make">
+        <MSBuild Projects="FirstTask\FirstLookAtOpenGL.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="PingPong">
+        <MSBuild Projects="SecondTask\PingPong.dproj"/>
+    </Target>
+    <Target Name="PingPong:Clean">
+        <MSBuild Projects="SecondTask\PingPong.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PingPong:Make">
+        <MSBuild Projects="SecondTask\PingPong.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="World3D">
+        <MSBuild Projects="ThirdTask\World3D.dproj"/>
+    </Target>
+    <Target Name="World3D:Clean">
+        <MSBuild Projects="ThirdTask\World3D.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="World3D:Make">
+        <MSBuild Projects="ThirdTask\World3D.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="TasskWithText">
+        <MSBuild Projects="FourthTask\TasskWithText.dproj"/>
+    </Target>
+    <Target Name="TasskWithText:Clean">
+        <MSBuild Projects="FourthTask\TasskWithText.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="TasskWithText:Make">
+        <MSBuild Projects="FourthTask\TasskWithText.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="FirstLookAtOpenGL;PingPong;World3D;TasskWithText"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="FirstLookAtOpenGL:Clean;PingPong:Clean;World3D:Clean;TasskWithText:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="FirstLookAtOpenGL:Make;PingPong:Make;World3D:Make;TasskWithText:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
